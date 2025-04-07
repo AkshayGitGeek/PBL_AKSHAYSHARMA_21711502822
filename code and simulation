@@ -1,0 +1,103 @@
+Logic Design Snippet
+
+module comparator_4bit(A, B, GT, LT, EQ);
+  input [3:0] A, B;
+  output GT, LT, EQ;
+  assign GT = (A > B);
+  assign LT = (A < B);
+  assign EQ = (A == B);
+endmodule
+
+Comparator Code:
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity comparator_4bit is
+    Port (
+        A  : in  STD_LOGIC_VECTOR (3 downto 0);
+        B  : in  STD_LOGIC_VECTOR (3 downto 0);
+        GT : out STD_LOGIC;
+        LT : out STD_LOGIC;
+        EQ : out STD_LOGIC
+    );
+end comparator_4bit;
+
+architecture Behavioral of comparator_4bit is
+begin
+    process (A, B)
+    begin
+        if (A > B) then
+            GT <= '1';
+            LT <= '0';
+            EQ <= '0';
+        elsif (A < B) then
+            GT <= '0';
+            LT <= '1';
+            EQ <= '0';
+        else
+            GT <= '0';
+            LT <= '0';
+            EQ <= '1';
+        end if;
+    end process;
+end Behavioral;
+
+
+Testbench code:
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_comparator_4bit is
+end tb_comparator_4bit;
+
+architecture behavior of tb_comparator_4bit is
+    component comparator_4bit
+        Port (
+            A  : in  STD_LOGIC_VECTOR (3 downto 0);
+            B  : in  STD_LOGIC_VECTOR (3 downto 0);
+            GT : out STD_LOGIC;
+            LT : out STD_LOGIC;
+            EQ : out STD_LOGIC
+        );
+    end component;
+
+    signal A, B : STD_LOGIC_VECTOR (3 downto 0);
+    signal GT, LT, EQ : STD_LOGIC;
+
+begin
+    uut: comparator_4bit port map (
+        A => A,
+        B => B,
+        GT => GT,
+        LT => LT,
+        EQ => EQ
+    );
+
+    process
+    begin
+        -- Test 1: A < B
+        A <= "0010"; B <= "0100"; wait for 10 ns;
+
+        -- Test 2: A = B
+        A <= "0110"; B <= "0110"; wait for 10 ns;
+
+        -- Test 3: A > B
+        A <= "1100"; B <= "1001"; wait for 10 ns;
+
+        -- Test 4: Edge case: A = 0000, B = 0001
+        A <= "0000"; B <= "0001"; wait for 10 ns;
+
+        wait;
+    end process;
+
+end behavior;
+
+Simulation code: In modelSM
+vcom comparator_4bit.vhd
+vcom tb_comparator_4bit.vhd
+vsim work.tb_comparator_4bit
+run 50 ns
+
+simulation:
+
